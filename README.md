@@ -19,7 +19,7 @@ To reproduce our model output, run
 `python train.py --caps kosmos --order optimal --n_epochs 10`.
 
 ## PREFS Metric
-Our paper also introduces a new metric for factual precision and recall evaluation of summaries. This method makes multiple api calls to GPT4. To run it as used the in paper, place your openai api key at `PREFS/api.key`, then, assuming your output summaries are at `experiments/{experiment-name}/generations_text`, with each summary in a separate file, run
+Our paper also introduces a new metric for factual precision and recall evaluation of summaries. This method makes multiple api calls to GPT4. To run it as used the in paper, place your openai api key at `PREFS/api.key`, then, assuming your output summaries are at `experiments/{experiment-name}/generations_test`, with each summary in a separate file, run
 
 `python compute_metrics.py --expname {experiment-name}`.
 
