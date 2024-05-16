@@ -19,7 +19,7 @@ class FactScorer(object):
 
         self.lm = OpenAIModel()
 
-    def get_score(self, atomic_facts, reference, summname, topic, overwrite_cache=False):
+    def get_score(self, atomic_facts, reference, summname, topic=None, overwrite_cache=False):
         decisions = []
         cache_dir = os.path.join(self.cache_dir_prefix, 'is_supported_factscore_caches')
         print(f'\nScoring facts for {summname}\n')
@@ -33,7 +33,10 @@ class FactScorer(object):
             cache = {}
         for i,atom in enumerate(atomic_facts):
             atom = atom.strip()
-            definition = f'Answer the question about {topic} based on the given context.\n\n'
+            if topic is None:
+                definition = 'Answer the question based on the given context.\n\n'
+            else:
+                definition = f'Answer the question about {topic} based on the given context.\n\n'
             definition += reference
             definition = ' '.join([x for x in definition.strip().split()][:3000])
             if not definition[-1] in string.punctuation:

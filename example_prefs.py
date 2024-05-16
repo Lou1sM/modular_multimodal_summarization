@@ -11,4 +11,4 @@ fs = FactScorer(cache_dir_prefix='.')
 prefs_score, score_per_fact = fs.get_score(facts,
                                            gold_summary,
                                            summname='test-summary',
-                                           topic='Three people.')
+                                           )
