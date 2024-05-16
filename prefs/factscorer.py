@@ -4,7 +4,7 @@ import json
 import numpy as np
 import os
 
-from PREFS.openai_lm import OpenAIModel
+from prefs.openai_lm import OpenAIModel
 from nltk.corpus import names
 
 english_names = names.words('male.txt') + names.words('female.txt')
@@ -14,7 +14,7 @@ class FactScorer(object):
     def __init__(self, model_name, cache_dir_prefix):
         self.model_name = model_name
 
-        self.openai_key = 'PREFS/api.key'
+        self.openai_key = 'prefs/api.key'
         self.cache_dir_prefix = cache_dir_prefix
         if not os.path.exists(cache_dir_prefix):
             os.makedirs(cache_dir_prefix)

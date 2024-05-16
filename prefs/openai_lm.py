@@ -5,7 +5,7 @@ import os
 
 class OpenAIModel(object):
     def __init__(self):
-        with open('PREFS/api.key') as f:
+        with open('prefs/api.key') as f:
             self.api_key = f.read().rstrip('\n')
 
     def generate(self, prompt, max_output_tokens):

@@ -1,29 +1,28 @@
-import numpy as np
-import re
-import sys
 import pandas as pd
 import json
-from PREFS.factscorer import FactScorer
+from prefs.factscorer import FactScorer
 from dl_utils.misc import check_dir
 from utils import rouge_from_multiple_refs
 from os.path import join
 import argparse
 from episode import episode_from_epname
 import os
-from PREFS.atomic_facts import AtomicFactGenerator
+from prefs.atomic_facts import AtomicFactGenerator
 from tqdm import tqdm
 
 
 def filter_facts(facts):
     """Some facts are vacuous of any real information, exclude these before scoring."""
-    facts = [f for f in facts if f=='<MALFORMED SENTENCE>' or (not any(x in f.lower() for x in ['someone','something','somebody','is a person','is a character', 'are people', 'are characters']) and len(f.split())>2)]
+    bad_substrings = ['someone','something','somebody','is a person','is a character', 'are people', 'are characters']
+    facts = [f for f in facts if f=='<MALFORMED SENTENCE>' or len(f.split())>2]
+    facts = [f for f in facts if f=='<MALFORMED SENTENCE>' or (not any(x in f.lower() for x in bad_substrings))]
     facts = [f for f in facts if not f.lower().startswith('there is a') and not 'is in a room' in f and not 'is talking' in f and not 'are talking' in f and not 'made a statement' in f]
     facts = [f for f in facts if not 'is mentioned' in f.lower() and not 'are mentioned' in f.lower() and not 'is there' in f.lower() and not 'are there' in f.lower()]
     facts = [f for f in facts if f=='<MALFORMED SENTENCE>' or not f.endswith(' to')]
     facts = [f for f in facts if not 'is there' in f and not 'are there' in f]
     return facts
 
-def get_maybe_cached_atomic_facts(maybe_cached_path, generator, nl_text=None, path=None):
+def get_maybe_cached_atomic_facts(maybe_cached_path, afg, nl_text=None, path=None):
     assert (nl_text is None) != (path is None)
     if nl_text is None:
         with open(path) as f:
@@ -34,7 +33,7 @@ def get_maybe_cached_atomic_facts(maybe_cached_path, generator, nl_text=None, pa
             facts = f.read().split('\n')
     else:
         print('no extraction cache found at', maybe_cached_path)
-        facts_and_sources, para_breaks = generator.run(nl_text)
+        facts_and_sources = afg.extract_facts(nl_text)
         facts = [x for line in facts_and_sources for x in line[1]]
         with open(maybe_cached_path,'w') as f:
             f.write('\n'.join([pf for pf in facts]))
@@ -55,9 +54,7 @@ if __name__ == '__main__':
     parser.add_argument('--ep',type=str,default='none')
     parser.add_argument('-t','--is_test',action='store_true')
     parser.add_argument('--overwrite',action='store_true')
-    parser.add_argument('--allow_bs_cache',action='store_true')
     parser.add_argument('--print_results',action='store_true')
-    parser.add_argument('--scorer_model', type=str)
     parser.add_argument('--expdir_prefix', type=str, default='experiments')
     parser.add_argument('--metrics', type=str, nargs='+', choices=all_metrics+['all','just-get-facts'], default=['all'])
     parser.add_argument('--n_dpoints', type=int, default=-1)
@@ -67,7 +64,6 @@ if __name__ == '__main__':
         ARGS.metrics = all_metrics
 
     fs = FactScorer('gpt-4-turbo-preview', cache_dir_prefix='.')
-
 
     expdir = join(ARGS.expdir_prefix, ARGS.expname)
     gendir = join(expdir, 'generations_test')
@@ -79,13 +75,7 @@ if __name__ == '__main__':
     if 'factscore' in ARGS.metrics:
         ARGS.metrics.append('n_facts')
 
-    if ARGS.expname == 'gt-upperbound':
-        info_df = pd.read_csv('dset_info.csv',index_col=0)
-        epnames_val = info_df[(info_df['split']=='val') & info_df['usable']].index.tolist()
-        epnames_test = info_df[(info_df['split']=='test') & info_df['usable']].index.tolist()
-        all_epnames = epnames_val + epnames_test
-    else:
-        all_epnames = os.listdir(gendir) if ARGS.ep == 'none' else [f'{ARGS.ep}.txt']
+    all_epnames = os.listdir(gendir) if ARGS.ep == 'none' else [f'{ARGS.ep}.txt']
     if ARGS.n_dpoints != -1:
         all_epnames = all_epnames[:ARGS.n_dpoints]
     full_results = {m:{} for m in ARGS.metrics}

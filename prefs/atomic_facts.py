@@ -6,7 +6,7 @@ import string
 import spacy
 import nltk
 import openai
-from PREFS.openai_lm import OpenAIModel
+from prefs.openai_lm import OpenAIModel
 from rank_bm25 import BM25Okapi
 import os
 from nltk.tokenize import sent_tokenize
@@ -24,7 +24,7 @@ class AtomicFactGenerator(object):
             os.system(
                 "python -m spacy download en")
             self.nlp = spacy.load("en_core_web_sm")
-        self.demo_path = 'PREFS/demos/demos_complex.json'
+        self.demo_path = 'prefs/demos/demos_complex.json'
         self.oailm = OpenAIModel()
 
         with open(self.demo_path, 'r') as f:
@@ -33,7 +33,7 @@ class AtomicFactGenerator(object):
         tokenized_corpus = [doc.split(" ") for doc in self.demos.keys()]
         self.bm25 = BM25Okapi(tokenized_corpus)
 
-        self.sent_cache_fp = 'PREFS/sent2facts_cache.json'
+        self.sent_cache_fp = 'prefs/sent2facts_cache.json'
         if os.path.exists(self.sent_cache_fp):
             with open(self.sent_cache_fp) as f:
                 self.sent_cache = json.load(f)
@@ -41,7 +41,7 @@ class AtomicFactGenerator(object):
         else:
             self.sent_cache = {}
 
-    def run(self, generation, cost_estimate=None):
+    def extract_facts(self, generation, cost_estimate=None):
         assert isinstance(generation, str)
         generation = re.sub(r' (?=[A-Z][a-z]+:)', '. ', generation)
         paragraphs = [para.strip() for para in generation.split("\n") if len(para.strip()) > 0]
@@ -79,7 +79,7 @@ class AtomicFactGenerator(object):
         # the new para_breaks should be identical to the original para_breaks
         atomic_facts_pairs, para_breaks = postprocess_atomic_facts(atomic_facts_pairs, list(para_breaks), self.nlp)
 
-        return atomic_facts_pairs, para_breaks
+        return atomic_facts_pairs
 
     def get_init_atomic_facts_from_sentence(self, sentences):
         """Get the initial atomic facts from the sentences. Return a total words cost if cost_estimate != None."""
