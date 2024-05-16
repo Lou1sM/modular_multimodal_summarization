@@ -11,9 +11,7 @@ english_names = names.words('male.txt') + names.words('female.txt')
 
 
 class FactScorer(object):
-    def __init__(self, model_name, cache_dir_prefix):
-        self.model_name = model_name
-
+    def __init__(self, cache_dir_prefix='.'):
         self.openai_key = 'prefs/api.key'
         self.cache_dir_prefix = cache_dir_prefix
         if not os.path.exists(cache_dir_prefix):
@@ -21,11 +19,11 @@ class FactScorer(object):
 
         self.lm = OpenAIModel()
 
-    def get_score(self, atomic_facts, ref_summaries_dict, summname, topic, overwrite_cache):
+    def get_score(self, atomic_facts, reference, summname, topic, overwrite_cache=False):
         decisions = []
         cache_dir = os.path.join(self.cache_dir_prefix, 'is_supported_factscore_caches')
         print(f'\nScoring facts for {summname}\n')
-        cache_path = os.path.join(cache_dir,f'{summname}-{self.model_name}.json')
+        cache_path = os.path.join(cache_dir,f'{summname}.json')
         had_cache = check_dir(cache_dir) and os.path.exists(cache_path)
         if (use_cache:=(had_cache and not overwrite_cache)):
             with open(cache_path) as f:
@@ -36,8 +34,7 @@ class FactScorer(object):
         for i,atom in enumerate(atomic_facts):
             atom = atom.strip()
             definition = f'Answer the question about {topic} based on the given context.\n\n'
-            for k,v in ref_summaries_dict.items():
-                definition += f'Title: {k}\nText: {v}\n\n'
+            definition += reference
             definition = ' '.join([x for x in definition.strip().split()][:3000])
             if not definition[-1] in string.punctuation:
                 definition += "."

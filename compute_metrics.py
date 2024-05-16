@@ -63,7 +63,7 @@ if __name__ == '__main__':
     if ARGS.metrics == ['all']:
         ARGS.metrics = all_metrics
 
-    fs = FactScorer('gpt-4-turbo-preview', cache_dir_prefix='.')
+    fs = FactScorer(cache_dir_prefix='.')
 
     expdir = join(ARGS.expdir_prefix, ARGS.expname)
     gendir = join(expdir, 'generations_test')
@@ -113,8 +113,9 @@ if __name__ == '__main__':
             pred_facts = get_maybe_cached_atomic_facts(cache_fpath, generator, nl_text=pred_summ)
             if 'factscore' in ARGS.metrics:
                 epname_to_use = f'{epname}-gtup' if ARGS.expname == 'gt-upperbound' else epname
+                ref = '\n'.join(f'Title: {k}\nText: {v}\n' for k,v in gt_summs.items())
                 score, decisions = fs.get_score(pred_facts,
-                                                ref_summaries_dict=gt_summs,
+                                                reference=ref,
                                                 summname=epname_to_use,
                                                 topic='A summary of a TV show',
                                                 overwrite_cache=False)
@@ -148,12 +149,11 @@ if __name__ == '__main__':
             pred_summ_to_use = '. '.join(pred_sents)
             print(pred_summ)
             print(pred_summ_to_use)
-            pred_summ_dict = {'pred':pred_summ_to_use}
             if all([ps=='<MALFORMED SENTENCE>' for ps in pred_sents]):
                 full_results['rev-factscore'][epname] = 0
             else:
                 score, decisions = fs.get_score(gt_facts,
-                                                ref_summaries_dict=pred_summ_dict,
+                                                reference=pred_summ_to_use,
                                                 summname=f'{epname}_{ARGS.expname}',
                                                 topic='A summary of a TV show',
                                                 overwrite_cache=False)
