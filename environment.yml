@@ -1,0 +1,33 @@
+name: amazon_video
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pytorch-cuda=11.8
+  - ca-certificates
+  - openssl
+  - transformers=4.32.1
+  - certifi
+  - pillow
+  - easydict
+  - av
+  - scikit-image
+  - opencv
+  - einops
+  - addict
+  - yapf
+  - boto3
+  - gdown
+  - scikit-video
+  - moviepy
+  - nltk
+  - dtw-python
+  - openai
+  - spacy
+  - sentencepiece
+  - pytorch
+  - torchvision
+  - faiss
+variables:
+  MAMBA_NO_BANNER: '1'
+prefix: /users-2/louis/mambaforge/envs/amazon_video
