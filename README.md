@@ -26,7 +26,7 @@ Our paper also introduces a new metric for factual precision and recall evaluati
 
 `python compute_metrics.py --expname {experiment-name}`.
 
-If you want to use PREFS in a different context, you can follow the example in `example_prefs.py`.
+If you want to use PRISMA in a different context, you can follow the example in `example_prefs.py`.
 
 ## Citation
 ```
