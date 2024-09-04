@@ -21,7 +21,7 @@ To reproduce our model output, run
 
 `python train.py --caps kosmos --order optimal --n_epochs 10`.
 
-## PREFS Metric
+## PRISMA Metric
 Our paper also introduces a new metric for factual precision and recall evaluation of summaries. This method makes multiple api calls to GPT4, and expects your openai api key at `prefs/api.key`. To run it as used the in paper, assuming your output summaries are at `experiments/{experiment-name}/generations_test`, with each summary in a separate file, run
 
 `python compute_metrics.py --expname {experiment-name}`.
