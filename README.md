@@ -30,10 +30,20 @@ If you want to use PRISMA in a different context, you can follow the example in 
 
 ## Citation
 ```
-@article{mahon2024modular,
-  title={A Modular Approach for Multimodal Summarization of TV Shows},
-  author={Mahon, Louis and Lapata, Mirella},
-  journal={arXiv preprint arXiv:2403.03823},
-  year={2024}
-}
+@inproceedings{mahon-lapata-2024-modular,
+    title = "A Modular Approach for Multimodal Summarization of {TV} Shows",
+    author = "Mahon, Louis  and
+      Lapata, Mirella",
+    editor = "Ku, Lun-Wei  and
+      Martins, Andre  and
+      Srikumar, Vivek",
+    booktitle = "Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = aug,
+    year = "2024",
+    address = "Bangkok, Thailand",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.acl-long.450",
+    doi = "10.18653/v1/2024.acl-long.450",
+    pages = "8272--8291",
+  }
 ```
