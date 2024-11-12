@@ -134,16 +134,16 @@ if __name__ == '__main__':
 
             def is_malformed(sent):
                 if len(sent.split())==2 and sent.strip().startswith('The'):
-                    return False
+                    return True
                 if len(sent.split())==1:
-                    return False
+                    return True
                 if any(ord(c)>=128 for c in list(sent)):
-                    return False
+                    return True
                 if ':' in sent or '?' in sent:
-                    return False
+                    return True
                 if any(x in sent.split() for x in ['I', 'you', 'we']):
-                    return False
-                return True
+                    return True
+                return False
 
             pred_sents = ['<MALFORMED SENTENCE>' if is_malformed(ps) else ps for ps in pred_sents]
             pred_summ_to_use = '. '.join(pred_sents)
