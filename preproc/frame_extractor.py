@@ -220,3 +220,11 @@ class FrameExtractor(object):
                 )
 
         return extracted_candidate_key_frames
+
+if __name__ == '__main__':
+    # Example usage for extracting frames
+    fe = FrameExtractor()
+    keyframes_list = fe.extract_keyframes('test_video.mp4')
+    middle_frame = keyframes_list[int((keyframes_list)/2)]
+    import cv2
+    cv2.imwrite('middle_frame.jpg', middle_frame)
