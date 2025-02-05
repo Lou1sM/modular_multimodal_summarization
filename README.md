@@ -1,4 +1,4 @@
-Code for the paper [A Modular Approach for Multimodal Summarization of TV Shows](https://arxiv.org/abs/2403.03823), applied to the SummScreen3D dataset. 
+Code for the paper [A Modular Approach for Multimodal Summarization of TV Shows](https://aclanthology.org/2024.acl-long.450/), applied to the SummScreen3D dataset. 
 
 ## Requirements
 If you use mamba, you can install the required dependencies with `mamba env create -f environment.yml`. Otherwise, the required packages are listed in `manual_requirements.sh` and can be installed with `. manual_requirements.sh`. 
